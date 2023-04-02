@@ -46,6 +46,9 @@ class Student(db.Model):
 def run_query():
     try:
         query = request.json['query']
+        query = query.replace('\n', '')
+        query = query.replace('\t', '')
+
         r = db.session.execute(text(query))
         c = []
         rk = r.keys()
