@@ -17,36 +17,43 @@ function MyTable() {
   const handleSubmit = event => {
     event.preventDefault();
 	setShowA(false)
-    axios.post('http://172.24.0.2:5000/v1/api/run', { "query": text })
-      .then(response => {
-		let rowsAffected = response.data.data.length;
+	if(text === ""){
+		setErr("Query String empty!")
+		setShowA(true)
+	} else {
 
-		if (rowsAffected > 0) {
-			let message = response.data.data;
-			setData(message)
-		}
+		axios.post('http://127.0.0.1:5000/v1/api/run', { "query": text })
+		.then(response => {
+			let rowsAffected = response.data.data.length;
 
-		if (rowsAffected === 0) {
-			let message = [{
-				"Command Result" : "No rows returned"
-			}]
-			setData(message)
-			setShowA(true)
-			setErr("No rows affected.")
-		}
+			if (rowsAffected > 0) {
+				let message = response.data.data;
+				setData(message)
+			}
+
+			if (rowsAffected === 0) {
+				let message = [{
+					"Command Result" : "No rows returned"
+				}]
+				setData(message)
+				setShowA(true)
+				setErr("No rows affected.")
+			}
 
 
 
-	  })
-      .catch(error => {
-			console.error(error.message)
-			let data = error.response.data;
-		
-			setErr(data.message)
-			setShowA(true)
-			console.log(err)
-		
-	  });
+		})
+		.catch(error => {
+				console.error(error.message)
+				let data = error.response.data;
+			
+				setErr(data.message)
+				setShowA(true)
+				console.log(err)
+			
+		});
+	}
+    
   }
 
   return (
