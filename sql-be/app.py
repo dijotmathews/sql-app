@@ -4,13 +4,13 @@ from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import func, text
 from flask_validate_json import validate_json
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, origins="http://localhost:3000")
 app.config['SQLALCHEMY_DATABASE_URI'] =\
     'sqlite:///' + os.path.join(basedir, 'database.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -57,13 +57,16 @@ def run_query():
         for row in users_rows:
             results.append(dict(zip(rk, row)))
 
-        response = {"message": "Success", "data": results, "columns": c}
+        response = jsonify(
+            {"message": "Success", "data": results, "columns": c})
+        response.headers.add('Access-Control-Allow-Origin', '*')
 
-        return jsonify(response)
+        return response
     except Exception as e:
-        error = {'message': str(e)}
-        return jsonify(error), 500
+        error = jsonify({'message': str(e)})
+        error.headers.add('Access-Control-Allow-Origin', '*')
+        return error, 500
 
 
 if __name__ == '__main__':
-    app.run(debug=True, port=9090)
+    app.run(debug=True, port=5000)

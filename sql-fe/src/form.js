@@ -17,7 +17,7 @@ function MyTable() {
   const handleSubmit = event => {
     event.preventDefault();
 	setShowA(false)
-    axios.post('http://backend:5000/v1/api/run', { "query": text })
+    axios.post('http://172.24.0.2:5000/v1/api/run', { "query": text })
       .then(response => {
 		let rowsAffected = response.data.data.length;
 
